@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI Security Sentinel — Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --orange:#F28D64;--violet:#6D69F0;--muted-purple:#8F70C0;--coral:#DFA69B;--plum:#8D537C;--maroon:#5E110B;--indigo:#272160;--grad:linear-gradient(135deg,#F28D64,#6D69F0);--red:#F28D64;--orange:#6D69F0;--green:#22c55e;--amber:#f59e0b;--blue:#6D69F0;--purple:#8F70C0;--dark:#0f0d2e;--card:rgba(255,255,255,.04)}
+html,body{width:100%;height:100%;background:#0a0820;font-family:'Cabinet Grotesk',sans-serif;overflow:hidden}
+.scale-wrap{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center}
+.deck{width:1280px;height:720px;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden;background:var(--dark)}
+.slide.active{display:flex}
+/* NAV */
+.nav-bar{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.1);border-radius:40px;padding:9px 18px;z-index:9999}
+.nav-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:16px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all .2s;font-family:inherit}
+.nav-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
+.slide-num{font-size:11px;font-weight:700;color:rgba(255,255,255,.3);min-width:50px;text-align:center;letter-spacing:.05em}
+.nav-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;transition:all .2s;border:none}
+.nav-dot.active{background:var(--orange);width:16px;border-radius:3px}
+/* Grid background */
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(242,141,100,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(242,141,100,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+/* Glows */
+.glow{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+/* Common */
+.stag{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:18px}
+.stag-red{background:rgba(242,141,100,.15);border:1px solid rgba(242,141,100,.3);color:#fca5a5}
+.stag-green{background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:#86efac}
+.stag-amber{background:rgba(143,112,192,.12);border:1px solid rgba(143,112,192,.3);color:#DFA69B}
+.stag-blue{background:rgba(109,105,240,.1);border:1px solid rgba(109,105,240,.25);color:#93c5fd}
+.slide-title{font-size:56px;font-weight:900;line-height:1.05;letter-spacing:-2px;color:#fff;margin-bottom:14px}
+.slide-title .hi{background:linear-gradient(135deg,var(--orange),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.slide-sub{font-size:17px;font-weight:500;color:rgba(224,200,240,.75);line-height:1.65;max-width:560px}
+.grad-red{background:linear-gradient(135deg,var(--orange),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+
+/* SLIDE 1 – TITLE */
+#s1{padding:80px 100px;justify-content:center;position:relative}
+#s1 .logo{width:68px;height:68px;background:linear-gradient(135deg,#F28D64,#6D69F0);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:28px;box-shadow:0 8px 32px rgba(242,141,100,.4)}
+#s1 .slide-title{font-size:68px;letter-spacing:-3px}
+.ring-grid{position:absolute;right:80px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:1fr 1fr;gap:14px;width:320px}
+.ring-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:18px;text-align:center}
+.ring-val{font-size:34px;font-weight:900;font-family:'DM Mono',monospace;margin-bottom:4px}
+.ring-lbl{font-size:11px;font-weight:700;color:#DFA69B;text-transform:uppercase;letter-spacing:.07em}
+
+/* SLIDE 2 – THREAT LANDSCAPE */
+#s2{padding:56px 70px;flex-direction:column}
+.threat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;flex:1;align-items:start}
+.threat-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:16px}
+.threat-icon{font-size:22px;margin-bottom:8px}
+.threat-name{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.threat-desc{font-size:11.5px;color:#DFA69B;line-height:1.55}
+.threat-owasp{font-size:10px;font-weight:700;color:var(--orange);margin-top:8px;letter-spacing:.06em}
+
+/* SLIDE 3 – MARKET */
+#s3{padding:56px 70px;flex-direction:column}
+.mkt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;flex:1}
+.mkt-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:20px}
+.mkt-logo{font-size:20px;margin-bottom:10px}
+.mkt-name{font-size:15px;font-weight:800;color:#fff;margin-bottom:4px}
+.mkt-price{font-size:12px;font-weight:700;margin-bottom:8px}
+.mkt-feat{font-size:11px;color:#DFA69B;line-height:1.7}
+.mkt-acq{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(242,141,100,.15);color:#fca5a5;border:1px solid rgba(242,141,100,.25);display:inline-block;margin-top:6px}
+
+/* SLIDE 4 – 10 MODULES */
+#s4{padding:50px 60px;flex-direction:column}
+.mod-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;flex:1}
+.mod-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.mod-card:hover{border-color:rgba(242,141,100,.3)}
+.mod-num{font-size:10px;font-weight:700;color:var(--orange);letter-spacing:.07em}
+.mod-icon{font-size:20px}
+.mod-name{font-size:12.5px;font-weight:700;color:#fff;line-height:1.3}
+.mod-desc{font-size:10.5px;color:rgba(255,255,255,.38);line-height:1.5}
+
+/* SLIDE 5 – DEEP DIVE */
+.deep-slide{flex-direction:row}
+.deep-left{width:360px;padding:64px 52px;display:flex;flex-direction:column;justify-content:center}
+.deep-right{flex:1;padding:52px;display:flex;flex-direction:column;gap:12px;justify-content:center}
+.deep-icon{font-size:48px;margin-bottom:16px}
+.deep-title{font-size:36px;font-weight:900;color:#fff;letter-spacing:-1px;line-height:1.15;margin-bottom:12px}
+.deep-sub{font-size:14px;color:rgba(255,255,255,.45);line-height:1.7}
+.detail-row{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:11px}
+.dr-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.dr-title{font-size:13.5px;font-weight:700;color:#fff;margin-bottom:2px}
+.dr-desc{font-size:12px;color:rgba(255,255,255,.4);line-height:1.5}
+.deep-left-red{background:rgba(242,141,100,.06);border-right:1px solid rgba(242,141,100,.12)}
+
+/* SLIDE 6 – COMPARISON */
+#s6{padding:44px 56px;flex-direction:column}
+.comp-table{width:100%;border-collapse:collapse;flex:1;table-layout:fixed}
+.comp-table th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:#DFA69B;padding:10px 12px;border-bottom:2px solid rgba(109,105,240,.25);text-align:center;background:rgba(109,105,240,.08);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.comp-table th:first-child{text-align:left;width:22%}
+.comp-table td{padding:9px 12px;border-bottom:1px solid rgba(255,255,255,.06);font-size:12px;color:#E8E0F5;text-align:center;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.comp-table td:first-child{text-align:left;font-weight:700;color:#FAF4F5;white-space:normal;font-size:12px}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+.comp-table tr:hover td{background:rgba(109,105,240,.08)}
+.ours-col{background:rgba(242,141,100,.06)}
+.ours-top{border-top:2px solid var(--orange)!important}
+.ours-bot{border-bottom:2px solid var(--orange)!important}
+.ours-lr{border-left:1px solid rgba(242,141,100,.3)!important;border-right:1px solid rgba(242,141,100,.3)!important}
+.chk{color:var(--green);font-size:15px}
+.cross{color:rgba(255,255,255,.15);font-size:14px}
+.half{color:#DFA69B;font-size:13px}
+
+/* SLIDE 7 – ARCHITECTURE */
+#s7{padding:56px 68px;flex-direction:column}
+.arch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;flex:1;align-items:start}
+.arch-col-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--orange);margin-bottom:8px;padding-bottom:8px;border-bottom:1px solid rgba(242,141,100,.25)}
+.arch-box{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.07);border-radius:9px;padding:11px 13px;margin-bottom:8px}
+.arch-box-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:2px}
+.arch-box-sub{font-size:11px;color:rgba(255,255,255,.35)}
+
+/* SLIDE 8 – ROI */
+#s8{flex-direction:row}
+.roi-left{flex:1;padding:70px 60px;display:flex;flex-direction:column;justify-content:center}
+.roi-right{width:400px;padding:60px 52px;background:rgba(34,197,94,.05);border-left:1px solid rgba(34,197,94,.12);display:flex;flex-direction:column;justify-content:center;gap:16px}
+.roi-stat{text-align:center;padding:22px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.18);border-radius:14px}
+.roi-val{font-size:42px;font-weight:900;color:var(--green);font-family:'DM Mono',monospace;margin-bottom:4px}
+.roi-lbl{font-size:12px;font-weight:700;color:rgba(255,255,255,.4)}
+.benefit-row{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.benefit-row:last-child{border-bottom:none}
+.ben-chk{width:24px;height:24px;border-radius:50%;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ben-txt{font-size:13px;font-weight:600;color:rgba(255,255,255,.7);line-height:1.4}
+
+/* SLIDE 9 – CLOSE */
+#s9{justify-content:center;align-items:center;flex-direction:column;text-align:center;position:relative}
+.action-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px;width:100%;max-width:860px;padding:0 60px}
+.action-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:22px;text-align:left}
+.action-step{font-size:10px;font-weight:700;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px}
+.action-title{font-size:15px;font-weight:800;color:#fff;margin-bottom:6px}
+.action-desc{font-size:11.5px;color:rgba(255,255,255,.4);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="scale-wrap" id="sw">
+<div class="deck" id="deck">
+
+<!-- ══ SLIDE 1: TITLE ══ -->
+<div class="slide active" id="s1">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:500px;height:400px;top:-100px;left:-80px;background:rgba(242,141,100,.1)"></div>
+  <div class="glow" style="width:300px;height:300px;bottom:-60px;right:400px;background:rgba(109,105,240,.07)"></div>
+  <div class="logo">🛡</div>
+  <div class="stag stag-red">Claude-powered AI Security</div>
+  <div class="slide-title">AI Security<br><span class="hi">Sentinel</span></div>
+  <div class="slide-sub">The first self-hosted, Claude-powered security platform for Agentic AI, RAG pipelines and MCP servers. Free to deploy, enterprise-grade protection.</div>
+  <div style="display:flex;gap:14px;margin-top:36px">
+    <div style="padding:9px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5)"><span style="color:#fff">10</span> Security Modules</div>
+    <div style="padding:9px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5)"><span style="color:#fff">Claude</span> AI Powered</div>
+    <div style="padding:9px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5)"><span style="color:#fff">Free</span> Self-Hosted</div>
+    <div style="padding:9px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9px;font-size:12px;font-weight:700;color:rgba(255,255,255,.5)">OWASP LLM <span style="color:#fff">2025</span></div>
+  </div>
+  <div class="ring-grid">
+    <div class="ring-card"><div class="ring-val" style="color:var(--orange)">69%</div><div class="ring-lbl">Enterprises deploying agents</div></div>
+    <div class="ring-card"><div class="ring-val" style="color:var(--amber)">21%</div><div class="ring-lbl">Have adequate visibility</div></div>
+    <div class="ring-card"><div class="ring-val" style="color:var(--orange)">$300M</div><div class="ring-lbl">Lakera acquired (2025)</div></div>
+    <div class="ring-card"><div class="ring-val" style="color:var(--green)">$0</div><div class="ring-lbl">Our agent cost</div></div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 2: THREAT LANDSCAPE ══ -->
+<div class="slide" id="s2">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:400px;height:200px;top:-40px;right:0;background:rgba(242,141,100,.07)"></div>
+  <div style="margin-bottom:22px">
+    <div class="stag stag-red">2025 Threat Landscape</div>
+    <div class="slide-title" style="font-size:40px;letter-spacing:-1.5px;margin-bottom:0">8 critical AI threats <span class="hi">enterprises face now</span></div>
+  </div>
+  <div class="threat-grid">
+    <div class="threat-card" style="border-top:2px solid var(--orange)">
+      <div class="threat-icon">💉</div><div class="threat-name">Prompt Injection</div>
+      <div class="threat-desc">Malicious inputs hijack agent behaviour, override instructions or extract system prompts</div>
+      <div class="threat-owasp">OWASP LLM01 · #1 threat</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--orange)">
+      <div class="threat-icon">🔓</div><div class="threat-name">System Prompt Leakage</div>
+      <div class="threat-desc">Attackers extract confidential instructions, business logic and proprietary configurations</div>
+      <div class="threat-owasp">OWASP LLM07 · NEW 2025</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--amber)">
+      <div class="threat-icon">🎯</div><div class="threat-name">Jailbreaks</div>
+      <div class="threat-desc">DAN, grandma exploit, role-play overrides and token manipulation bypass safety guardrails</div>
+      <div class="threat-owasp">OWASP LLM02 · escalating</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--purple)">
+      <div class="threat-icon">🔌</div><div class="threat-name">MCP Tool Abuse</div>
+      <div class="threat-desc">Overly-broad MCP tools, injections via tool metadata, agents executing unauthorised actions</div>
+      <div class="threat-owasp">Emerging · MCP-specific</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--blue)">
+      <div class="threat-icon">📚</div><div class="threat-name">RAG Corpus Poisoning</div>
+      <div class="threat-desc">Attackers inject malicious documents into vector stores to manipulate retrieval and responses</div>
+      <div class="threat-owasp">OWASP LLM06 · RAG-specific</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--green)">
+      <div class="threat-icon">🤖</div><div class="threat-name">Agent Goal Misalignment</div>
+      <div class="threat-desc">Autonomous agents taking actions outside their mandate, privilege escalation, data exfiltration</div>
+      <div class="threat-owasp">Agentic AI · A2A trust</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--orange)">
+      <div class="threat-icon">🔍</div><div class="threat-name">PII / Data Leakage</div>
+      <div class="threat-desc">Models exposing emails, credit cards, API keys, national IDs and credentials in outputs</div>
+      <div class="threat-owasp">OWASP LLM02 · LLM06</div>
+    </div>
+    <div class="threat-card" style="border-top:2px solid var(--amber)">
+      <div class="threat-icon">📦</div><div class="threat-name">Supply Chain Attacks</div>
+      <div class="threat-desc">Backdoored weights from HuggingFace, malicious Pickle files, poisoned training data</div>
+      <div class="threat-owasp">OWASP LLM05 · growing</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 3: MARKET LANDSCAPE ══ -->
+<div class="slide" id="s3">
+  <div class="grid-bg"></div>
+  <div style="margin-bottom:22px">
+    <div class="stag stag-amber">Market landscape</div>
+    <div class="slide-title" style="font-size:38px;letter-spacing:-1.5px;margin-bottom:0">AI security market — <span class="hi">$300M acquisitions in 2025</span></div>
+  </div>
+  <div class="mkt-grid">
+    <div class="mkt-card" style="border-top:2px solid #F28D64">
+      <div class="mkt-logo">🛡</div><div class="mkt-name">Lakera Guard</div>
+      <div class="mkt-price" style="color:#fca5a5">Acquired by Check Point — $300M</div>
+      <div class="mkt-feat">Real-time prompt injection + jailbreak blocking. LLM firewall. Low-latency API proxy. Gandalf adversarial training. Trusted by Fortune 500 banking clients.</div>
+      <div class="mkt-acq">Acquired Sept 2025</div>
+    </div>
+    <div class="mkt-card" style="border-top:2px solid #6D69F0">
+      <div class="mkt-logo">🔒</div><div class="mkt-name">Prompt Security</div>
+      <div class="mkt-price" style="color:#fdba74">Acquired by SentinelOne — $180M</div>
+      <div class="mkt-feat">GenAI security platform. Prompt + output scanning. Shadow AI discovery. DLP for AI. Now part of SentinelOne's endpoint + AI security bundle.</div>
+      <div class="mkt-acq">Acquired Aug 2025</div>
+    </div>
+    <div class="mkt-card" style="border-top:2px solid #8F70C0">
+      <div class="mkt-logo">⚡</div><div class="mkt-name">Protect AI</div>
+      <div class="mkt-price" style="color:#d8b4fe">$60M Series B · 2024</div>
+      <div class="mkt-feat">ML security + governance. ModelScan for HuggingFace. LLM Guard (OSS). Pipeline scanning. Model lineage tracing. Enterprise MLOps security.</div>
+    </div>
+    <div class="mkt-card" style="border-top:2px solid #22c55e">
+      <div class="mkt-logo">🌐</div><div class="mkt-name">Wiz AI-SPM</div>
+      <div class="mkt-price" style="color:#86efac">Add-on to Wiz Cloud Security</div>
+      <div class="mkt-feat">AI Security Posture Management. Discovers AI assets, maps data flows. Detects misconfigurations. AI supply chain validation. Cloud-native focus.</div>
+    </div>
+    <div class="mkt-card" style="border-top:2px solid #6D69F0">
+      <div class="mkt-logo">🎯</div><div class="mkt-name">CalypsoAI</div>
+      <div class="mkt-price" style="color:#93c5fd">>$45M raised · 2025</div>
+      <div class="mkt-feat">Inference-layer security. Agentic red-teaming. Real-time guardrails. Observability at decision point. Continuous monitoring of model behaviour.</div>
+    </div>
+    <div class="mkt-card" style="border-top:2px solid #f59e0b">
+      <div class="mkt-logo">🔴</div><div class="mkt-name">SplxAI</div>
+      <div class="mkt-price" style="color:#fcd34d">$7M Seed · 2025</div>
+      <div class="mkt-feat">Offensive AI security. 1000s of automated attacks against LLM apps. Open-source Agentic Radar for multi-agent risk tracking. Rapid red teaming.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 4: 10 MODULES ══ -->
+<div class="slide" id="s4">
+  <div class="grid-bg"></div>
+  <div style="margin-bottom:22px">
+    <div class="stag stag-red">Platform overview</div>
+    <div class="slide-title" style="font-size:38px;letter-spacing:-1.5px;margin-bottom:0">10 security modules — <span class="hi">one sentinel</span></div>
+  </div>
+  <div class="mod-grid">
+    <div class="mod-card"><div class="mod-num">Module 01</div><div class="mod-icon">💉</div><div class="mod-name">Prompt Injection Scanner</div><div class="mod-desc">10+ pattern detectors + Claude AI analysis. Risk scoring. Covers OWASP LLM01.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 02</div><div class="mod-icon">🔌</div><div class="mod-name">MCP Server Auditor</div><div class="mod-desc">Tool permission analysis, injection surfaces, dangerous capabilities, schema validation.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 03</div><div class="mod-icon">📚</div><div class="mod-name">RAG Security Assessor</div><div class="mod-desc">Corpus poisoning, retrieval hijacking, ACL gaps, embedding manipulation risks.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 04</div><div class="mod-icon">🤖</div><div class="mod-name">Agent Behaviour Monitor</div><div class="mod-desc">Tool call log analysis, anomaly detection, privilege escalation, exfil patterns.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 05</div><div class="mod-icon">🎯</div><div class="mod-name">Jailbreak Red Teamer</div><div class="mod-desc">12 attack types: DAN, grandma, developer mode, token manipulation, indirect injection.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 06</div><div class="mod-icon">🔓</div><div class="mod-name">System Prompt Leak Tester</div><div class="mod-desc">10 extraction attempts. Confidentiality analysis. OWASP LLM07 coverage.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 07</div><div class="mod-icon">🔍</div><div class="mod-name">Data Leakage Detector</div><div class="mod-desc">PII, API keys, JWTs, UAE National IDs, IBANs, credit cards. 10 built-in patterns.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 08</div><div class="mod-icon">📦</div><div class="mod-name">Supply Chain Checker</div><div class="mod-desc">HuggingFace model provenance, CVEs, backdoor risk, Pickle file detection.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 09</div><div class="mod-icon">📋</div><div class="mod-name">Compliance Reporter</div><div class="mod-desc">OWASP LLM Top 10 · NIST AI RMF · EU AI Act. Gap analysis + priority actions.</div></div>
+    <div class="mod-card"><div class="mod-num">Module 10</div><div class="mod-icon">💬</div><div class="mod-name">AI Security Analyst</div><div class="mod-desc">Full Claude chat. Threat modelling, remediation, policy design, OWASP guidance.</div></div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 5: DEEP DIVE — AI ANALYST ══ -->
+<div class="slide deep-slide" id="s5">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:400px;height:400px;right:-60px;bottom:-60px;background:rgba(242,141,100,.08)"></div>
+  <div class="deep-left deep-left-red">
+    <div class="deep-icon">💬</div>
+    <div class="deep-title">Claude AI security analyst</div>
+    <div class="deep-sub">A full Claude conversation interface — purpose-built for AI security. Threat modelling, remediation advice, policy design, OWASP guidance and more.</div>
+  </div>
+  <div class="deep-right">
+    <div class="detail-row"><div class="dr-icon">🧠</div><div><div class="dr-title">OWASP LLM expertise built in</div><div class="dr-desc">Deep knowledge of all 10 OWASP LLM categories (2025 edition), with specific CVE references and remediation steps for each threat type.</div></div></div>
+    <div class="detail-row"><div class="dr-icon">🔍</div><div><div class="dr-title">Threat modelling on demand</div><div class="dr-desc">Describe your AI architecture and Claude creates a complete threat model — attack surface, threat actors, mitigations and priority ranking.</div></div></div>
+    <div class="detail-row"><div class="dr-icon">🔌</div><div><div class="dr-title">MCP + Agentic AI specialist</div><div class="dr-desc">Deep knowledge of MCP security risks, agent-to-agent trust issues, tool governance and the emerging A2A protocol attack surface.</div></div></div>
+    <div class="detail-row"><div class="dr-icon">📋</div><div><div class="dr-title">Compliance guidance</div><div class="dr-desc">Maps your situation to NIST AI RMF functions (GOVERN, MAP, MEASURE, MANAGE) and EU AI Act risk categories with specific gap analysis.</div></div></div>
+    <div class="detail-row"><div class="dr-icon">⚡</div><div><div class="dr-title">Quick-action prompts</div><div class="dr-desc">8 pre-built quick queries for the most common tasks: hardening system prompts, RAG injection defence, A2A security, MCP production checklist.</div></div></div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 6: COMPARISON ══ -->
+<div class="slide" id="s6">
+  <div class="grid-bg"></div>
+  <div style="margin-bottom:20px;display:flex;align-items:flex-end;justify-content:space-between">
+    <div>
+      <div class="stag stag-amber">Market comparison</div>
+      <div class="slide-title" style="font-size:32px;letter-spacing:-1.5px;margin-bottom:0">AI Security Sentinel vs <span class="hi">enterprise tools</span></div>
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,.25)">Sources: vendor sites, Gartner, G2 · March 2026</div>
+  </div>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th style="width:190px">Capability</th>
+        <th>Lakera<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:rgba(255,255,255,.25)">Check Point · $300M acq</span></th>
+        <th>Prompt Security<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:rgba(255,255,255,.25)">SentinelOne · $180M acq</span></th>
+        <th>CalypsoAI<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:rgba(255,255,255,.25)">$45M raised</span></th>
+        <th>Protect AI<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:rgba(255,255,255,.25)">$60M raised</span></th>
+        <th class="ours-col ours-top ours-lr" style="color:var(--orange);font-size:12px;font-weight:800">AI Security Sentinel<br><span style="font-size:11px;color:var(--orange);font-weight:800">FREE · Self-hosted</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Prompt injection detection</td><td><span class="chk">✓</span></td><td><span class="chk">✓</span></td><td><span class="chk">✓</span></td><td><span class="half">◐</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> + Claude AI</td></tr>
+      <tr><td>Jailbreak red teaming</td><td><span class="chk">✓</span> Red team</td><td><span class="half">◐</span></td><td><span class="chk">✓</span></td><td><span class="half">◐</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> 12 types</td></tr>
+      <tr><td>MCP server auditing</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> Full tool audit</td></tr>
+      <tr><td>RAG pipeline security</td><td><span class="cross">✗</span></td><td><span class="half">◐</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> Full assess</td></tr>
+      <tr><td>Agent behaviour monitor</td><td><span class="half">◐</span></td><td><span class="half">◐</span></td><td><span class="chk">✓</span></td><td><span class="cross">✗</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> Log analysis</td></tr>
+      <tr><td>Data / PII leakage scan</td><td><span class="chk">✓</span></td><td><span class="chk">✓</span></td><td><span class="chk">✓</span></td><td><span class="chk">✓</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> 10 patterns</td></tr>
+      <tr><td>AI supply chain check</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="chk">✓</span> ModelScan</td><td class="ours-col ours-lr"><span class="chk">✓</span> Full scan</td></tr>
+      <tr><td>OWASP / NIST compliance</td><td><span class="half">◐</span></td><td><span class="half">◐</span></td><td><span class="chk">✓</span></td><td><span class="chk">✓</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> All 3 frameworks</td></tr>
+      <tr><td>Claude AI chat analyst</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td class="ours-col ours-lr"><span class="chk">✓</span> Full chat</td></tr>
+      <tr><td>Self-hosted / data stays yours</td><td><span class="cross">✗</span> SaaS</td><td><span class="cross">✗</span> SaaS</td><td><span class="cross">✗</span> SaaS</td><td><span class="cross">✗</span> SaaS</td><td class="ours-col ours-lr ours-bot"><span class="chk">✓</span> Self-hosted</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ══ SLIDE 7: ARCHITECTURE ══ -->
+<div class="slide" id="s7">
+  <div class="grid-bg"></div>
+  <div style="margin-bottom:24px">
+    <div class="stag stag-blue">Technical architecture</div>
+    <div class="slide-title" style="font-size:36px;letter-spacing:-1.5px;margin-bottom:0">Built on the <span class="hi">same proven stack</span> as your other agents</div>
+  </div>
+  <div class="arch-grid">
+    <div>
+      <div class="arch-col-title">Frontend</div>
+      <div class="arch-box"><div class="arch-box-title">auth.html</div><div class="arch-box-sub">Dark-theme login · cookie auth</div></div>
+      <div class="arch-box"><div class="arch-box-title">app.html</div><div class="arch-box-sub">10-tab security dashboard</div></div>
+      <div class="arch-box"><div class="arch-box-title">No framework</div><div class="arch-box-sub">Vanilla JS · zero dependencies</div></div>
+    </div>
+    <div>
+      <div class="arch-col-title">Backend — server.js</div>
+      <div class="arch-box"><div class="arch-box-title">Express.js</div><div class="arch-box-sub">REST API · same RFP/FinOps pattern</div></div>
+      <div class="arch-box"><div class="arch-box-title">bcryptjs</div><div class="arch-box-sub">Password hashing · HttpOnly cookies</div></div>
+      <div class="arch-box"><div class="arch-box-title">JSON file DB</div><div class="arch-box-sub">data/db.json · no extra infra</div></div>
+      <div class="arch-box"><div class="arch-box-title">AES-256 encryption</div><div class="arch-box-sub">Secrets encrypted at rest</div></div>
+    </div>
+    <div>
+      <div class="arch-col-title">Security engine</div>
+      <div class="arch-box"><div class="arch-box-title">Pattern scanner</div><div class="arch-box-sub">10+ injection regex patterns</div></div>
+      <div class="arch-box"><div class="arch-box-title">Jailbreak library</div><div class="arch-box-sub">12 known attack techniques</div></div>
+      <div class="arch-box"><div class="arch-box-title">PII detector</div><div class="arch-box-sub">10 regex patterns (PII, keys, IDs)</div></div>
+      <div class="arch-box"><div class="arch-box-title">Risk scorer</div><div class="arch-box-sub">Weighted severity → critical/high/med/low</div></div>
+    </div>
+    <div>
+      <div class="arch-col-title">AI + Deployment</div>
+      <div class="arch-box"><div class="arch-box-title">Claude Sonnet 4</div><div class="arch-box-sub">All 8 AI-powered modules</div></div>
+      <div class="arch-box"><div class="arch-box-title">Azure App Service</div><div class="arch-box-sub">Node 20 LTS · Linux · B1+</div></div>
+      <div class="arch-box"><div class="arch-box-title">Shared API key</div><div class="arch-box-sub">Admin sets once · all users benefit</div></div>
+      <div class="arch-box"><div class="arch-box-title">deploy-finops.sh</div><div class="arch-box-sub">One-click bash deployment</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 8: ROI ══ -->
+<div class="slide" id="s8">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:300px;height:300px;right:-40px;top:50%;transform:translateY(-50%);background:rgba(34,197,94,.08)"></div>
+  <div class="roi-left">
+    <div class="stag stag-green">Business value</div>
+    <div class="slide-title" style="font-size:46px;letter-spacing:-2px">Immediate value,<br><span class="hi">zero platform cost</span></div>
+    <div style="font-size:14px;color:rgba(255,255,255,.45);line-height:1.7;margin-bottom:32px;max-width:460px">Enterprise AI security tools cost $20K–$300K/yr. AI Security Sentinel delivers the same core capabilities at $0 — deployed on your Azure infrastructure, your data never leaves.</div>
+    <div>
+      <div class="benefit-row"><div class="ben-chk">✓</div><div class="ben-txt">Scan every prompt, agent call and RAG result before production</div></div>
+      <div class="benefit-row"><div class="ben-chk">✓</div><div class="ben-txt">Generate OWASP + NIST compliance reports in minutes not months</div></div>
+      <div class="benefit-row"><div class="ben-chk">✓</div><div class="ben-txt">Red-team system prompts before your team deploys AI features</div></div>
+      <div class="benefit-row"><div class="ben-chk">✓</div><div class="ben-txt">Audit MCP servers before connecting to production agents</div></div>
+      <div class="benefit-row"><div class="ben-chk">✓</div><div class="ben-txt">Data never leaves your Azure infrastructure — full privacy</div></div>
+    </div>
+  </div>
+  <div class="roi-right">
+    <div class="roi-stat"><div class="roi-val">$0</div><div class="roi-lbl">Platform cost (vs $180K–$300K acquisitions)</div></div>
+    <div class="roi-stat" style="background:rgba(242,141,100,.08);border-color:rgba(242,141,100,.2)"><div class="roi-val" style="color:var(--orange)">10</div><div class="roi-lbl">Security modules covering all major AI threats</div></div>
+    <div class="roi-stat" style="background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2)"><div class="roi-val" style="color:var(--amber)">Day 1</div><div class="roi-lbl">Time to first security scan after deployment</div></div>
+  </div>
+</div>
+
+<!-- ══ SLIDE 9: CLOSE ══ -->
+<div class="slide" id="s9">
+  <div class="grid-bg"></div>
+  <div class="glow" style="width:600px;height:300px;top:-60px;left:50%;transform:translateX(-50%);background:rgba(242,141,100,.1)"></div>
+  <div class="glow" style="width:400px;height:200px;bottom:-40px;left:50%;transform:translateX(-50%);background:rgba(109,105,240,.07)"></div>
+  <div style="position:relative;z-index:1;text-align:center">
+    <div class="stag stag-red" style="margin:0 auto 18px">Get started</div>
+    <div class="slide-title" style="font-size:58px;letter-spacing:-2.5px">Deploy in <span class="hi">15 minutes</span></div>
+    <div style="font-size:16px;color:rgba(255,255,255,.45);max-width:560px;margin:0 auto;line-height:1.7">Same deployment as your FinOps and RFP agents. Upload 4 files, create your admin account, add your Anthropic API key — start securing your AI stack immediately.</div>
+    <div class="action-grid">
+      <div class="action-card" style="border-top:2px solid var(--orange)">
+        <div class="action-step">Step 1 — Upload</div>
+        <div class="action-title">Deploy to Azure App Service</div>
+        <div class="action-desc">Run the bash deployment script. It auto-detects quota, finds a working region and deploys server.js + public/ in one command.</div>
+      </div>
+      <div class="action-card" style="border-top:2px solid var(--orange)">
+        <div class="action-step">Step 2 — Configure</div>
+        <div class="action-title">Set your Anthropic API key</div>
+        <div class="action-desc">Create your first account (auto-Admin). Go to ⚙ Settings and paste your Anthropic API key — all 8 AI modules activate instantly.</div>
+      </div>
+      <div class="action-card" style="border-top:2px solid var(--green)">
+        <div class="action-step">Step 3 — Secure</div>
+        <div class="action-title">Start scanning your AI stack</div>
+        <div class="action-desc">Paste any system prompt, MCP server config or RAG setup. Get immediate risk scores, Claude AI analysis and prioritised remediation.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+</div><!-- /scale-wrap -->
+
+<div class="nav-bar">
+  <button class="nav-btn" onclick="prev()">←</button>
+  <div id="nav-dots" style="display:flex;gap:5px"></div>
+  <div class="slide-num" id="slide-num">1 / 9</div>
+  <button class="nav-btn" onclick="next()">→</button>
+</div>
+
+<script>
+const slides=['s1','s2','s3','s4','s5','s6','s7','s8','s9'];
+let cur=0;
+function scale(){const sw=document.getElementById('sw'),dk=document.getElementById('deck');dk.style.transform=`scale(${Math.min(sw.clientWidth/1280,sw.clientHeight/720)})`;dk.style.transformOrigin='center center';}
+window.addEventListener('resize',scale);scale();
+function buildDots(){const c=document.getElementById('nav-dots');c.innerHTML=slides.map((_,i)=>`<button class="nav-dot${i===0?' active':''}" onclick="goTo(${i})"></button>`).join('');}
+function goTo(n){document.getElementById(slides[cur]).classList.remove('active');document.querySelectorAll('.nav-dot')[cur].classList.remove('active');cur=Math.max(0,Math.min(n,slides.length-1));document.getElementById(slides[cur]).classList.add('active');document.querySelectorAll('.nav-dot')[cur].classList.add('active');document.getElementById('slide-num').textContent=(cur+1)+' / '+slides.length;}
+function next(){goTo(cur+1);}function prev(){goTo(cur-1);}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();next();}if(e.key==='ArrowLeft'){e.preventDefault();prev();}});
+let tx=0;document.addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});
+document.addEventListener('touchend',e=>{const dx=tx-e.changedTouches[0].clientX;if(Math.abs(dx)>50){dx>0?next():prev();}},{passive:true});
+buildDots();
+</script>
+</body>
+</html>
